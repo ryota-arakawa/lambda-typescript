@@ -1,8 +1,7 @@
 export class UserService {
-  constructor(
-    zms: any,
-  ) {
-    console.log(this);
-    console.log(zms);
+  test: string;
+
+  constructor() {
+    this.test = 'test';
   }
 }
