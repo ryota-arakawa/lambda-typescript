@@ -2,7 +2,7 @@
   "name": "lambda-typescript",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app/index.js",
   "dependencies": {
     "bunyan": "^1.8.15",
     "@types/aws-lambda": "^8.10.66",
@@ -16,7 +16,7 @@
   "devDependencies": {},
   "scripts": {
     "postinstall": "npm run build",
-    "dev": "ts-node src/index.ts",
+    "dev": "ts-node app/src/index.ts",
     "clean": "rimraf dist/*",
     "tsc": "tsc",
     "build": "npm-run-all clean tsc"
