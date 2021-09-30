@@ -1,1 +1,4 @@
 node_modules
+app/dist
+.aws-sam
+*.map

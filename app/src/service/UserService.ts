@@ -1,7 +1,8 @@
 export class UserService {
   constructor(
-    private zms: any,
+    zms: any,
   ) {
     console.log(this);
+    console.log(zms);
   }
 }
