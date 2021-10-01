@@ -1,5 +1,4 @@
 node_modules
-app/dist
 .aws-sam
 *.map
 app/src/*.js

@@ -12,9 +12,9 @@ Resources:
   LambdaTypescriptFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
-      CodeUri: app/dist/
-      Handler: index.handler
-      Runtime: nodejs14.x
+      CodeUri: src/app/
+      Handler: app.lambdaHandler
+      Runtime: nodejs10.x
       Events:
         App:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
