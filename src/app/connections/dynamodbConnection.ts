@@ -6,13 +6,17 @@ export class DynamoDBConnection implements Connection {
   private readonly __documentClient: AWS.DynamoDB.DocumentClient;
   private readonly __client: AWS.DynamoDB;
 
-  constructor(options: { region?: string; endpoint: string | undefined; enableAWSXray: boolean }) {
+  constructor(options?: {
+    region?: string;
+    endpoint?: string | undefined;
+    enableAWSXray?: boolean | false;
+  }) {
     const dynamoDBOptions: DynamoDB.ClientConfiguration = {
-      region: options.region,
-      endpoint: options.endpoint,
+      region: options?.region || 'ap-northeast-1',
+      endpoint: options?.endpoint || 'http://docker.for.mac.localhost:8000',
     };
 
-    if (options.enableAWSXray) {
+    if (options?.enableAWSXray) {
       const AWSXRay = require('aws-xray-sdk-core');
       const aws = AWSXRay.captureAWS(AWS);
       this.__client = new aws.DynamoDB(dynamoDBOptions);

@@ -1,6 +1,7 @@
 import * as log from 'lambda-log';
 import { UserService } from './service';
 import { DynamoDBConnection } from './connections';
+import { Items } from './entry';
 
 let response;
 
@@ -28,13 +29,18 @@ exports.lambdaHandler = async (
 
   try {
     const userService = new UserService();
-    const dynamoDBConnection = new DynamoDBConnection({
-      enableAWSXray: false,
-      region: 'ap-northeast-1',
-      endpoint: 'http://docker.for.mac.localhost:8000',
-    });
+    // const dynamoDBConnection = new DynamoDBConnection({
+    //   enableAWSXray: false,
+    //   region: 'ap-northeast-1',
+    //   endpoint: 'http://docker.for.mac.localhost:8000',
+    // });
 
+    // log.info(await dynamoDBConnection.client.listTables({}).promise());
+    const dynamoDBConnection = new DynamoDBConnection();
     log.info(await dynamoDBConnection.client.listTables({}).promise());
+
+    const items = new Items();
+    log.info(await items.scanEntries());
 
     response = {
       statusCode: 200,
