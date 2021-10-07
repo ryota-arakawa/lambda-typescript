@@ -1,7 +1,7 @@
 import * as log from 'lambda-log';
 import { UserService } from './service';
-import { DynamoDBConnection } from '../commonResourcesLayer/connections';
-import { Items } from './entry';
+import { DynamoDBConnection } from '@/commonResourcesLayer/connections';
+import { Items } from '@/commonResourcesLayer/entry';
 
 let response;
 
