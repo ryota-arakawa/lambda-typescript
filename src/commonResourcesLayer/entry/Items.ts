@@ -2,6 +2,7 @@ import { hashKey, table, attribute } from '@aws/dynamodb-data-mapper-annotations
 import { DataMapper, DynamoDbTable, ItemNotFoundException } from '@aws/dynamodb-data-mapper';
 import { DynamoDBConnection } from '../connections';
 import * as log from 'lambda-log';
+import { v4 as uuidv4 } from 'uuid';
 
 @table('Items')
 export class ItemsEntry {
@@ -26,20 +27,7 @@ export class Items extends DynamoDBConnection {
     this.mapper = new DataMapper({ client: this.client });
   }
 
-  async getEntries(clientId?: string, limit?: number, scanForward?: boolean): Promise<any> {
-    const paginator = this.mapper.query(ItemsEntry, { partitionKey: 'id' }).pages();
-
-    const items: ItemsEntry[] = [];
-    for await (const page of paginator) {
-      items.push(...page);
-    }
-
-    return {
-      items,
-    };
-  }
-
-  async scanEntries() {
+  async scanItems() {
     const paginator = this.mapper.scan(ItemsEntry);
 
     const items: ItemsEntry[] = [];
@@ -48,5 +36,15 @@ export class Items extends DynamoDBConnection {
     }
 
     return items;
+  }
+
+  async addItem() {
+    const toSave = Object.assign(new ItemsEntry(), { id: uuidv4() });
+
+    log.info({ toSave }, 'Adding Items');
+
+    const result = await this.mapper.put(toSave);
+
+    log.info(`result is ${JSON.stringify(result)}`);
   }
 }

@@ -40,9 +40,11 @@ exports.lambdaHandler = async (
     log.info(await dynamoDBConnection.client.listTables({}).promise());
 
     const items = new Items();
-    log.info(await items.scanEntries());
+    log.info(await items.scanItems());
     // log.info(await items.getEntries('1234'));
     log.info(`log environment is ${JSON.stringify(process.env.DYNAMODB_ENDPOINT)}`);
+
+    await items.addItem();
 
     response = {
       statusCode: 200,

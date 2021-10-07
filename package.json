@@ -19,7 +19,8 @@
     "aws-sdk": "^2.553.0",
     "aws-xray-sdk-core": "^3.3.3",
     "lambda-log": "^3.0.1",
-    "source-map-support": "^0.5.13"
+    "source-map-support": "^0.5.13",
+    "uuid": "^8.3.2"
   },
   "scripts": {
     "postinstall": "npm run build",
