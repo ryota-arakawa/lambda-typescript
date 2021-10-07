@@ -14,8 +14,8 @@ export class ItemsEntry {
   @hashKey({})
   id!: string;
 
-  // @attribute()
-  // body: string;
+  @attribute()
+  body: string;
 }
 
 export class Items extends DynamoDBConnection {
