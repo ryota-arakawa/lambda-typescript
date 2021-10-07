@@ -1,28 +1,9 @@
-// const axios = require('axios')
-// const url = 'http://checkip.amazonaws.com/';
-let response;
 import * as log from 'lambda-log';
 import { UserService } from './service';
-import * as AWS from 'aws-sdk';
+import { DynamoDBConnection } from '@/commonResourcesLayer/connections';
+import { Items } from '@/commonResourcesLayer/entry';
 
-AWS.config.update({
-  region: 'ap-northeast-1',
-  // endpoint: 'http://dynamodb:8000'
-});
-
-const makeClient = () => {
-  // const dynamoDbClient = new AWS.DynamoDB({
-  //   endpoint: 'http://localhost:8000',
-  //   // accessKeyId: awsAccessKeyId,
-  //   // secretAccessKey: awsAccessKey,
-  //   region: 'ap-northeast-1'
-  // })
-  const dynamoDB = new AWS.DynamoDB({
-    endpoint: 'http://docker.for.mac.localhost:8000',
-    maxRetries: 10
-  });
-  return dynamoDB
-}
+let response;
 
 /**
  *
@@ -36,35 +17,45 @@ const makeClient = () => {
  * @returns {Object} object - API Gateway Lambda Proxy Output Format
  *
  */
-exports.lambdaHandler = async (event: AWSLambda.APIGatewayEvent, context: AWSLambda.APIGatewayEventRequestContext) => {
+exports.lambdaHandler = async (
+  event: AWSLambda.APIGatewayEvent,
+  context: AWSLambda.APIGatewayEventRequestContext
+) => {
   log.options.meta = {
     // event,
     // context,
     stage: process.env.NODE_ENV,
-  }
+  };
 
   try {
-    const dbClient = makeClient();
-
-    log.info('debug1111');
-    log.info(await dbClient.listTables({}).promise());
-
     const userService = new UserService();
+    // const dynamoDBConnection = new DynamoDBConnection({
+    //   enableAWSXray: false,
+    //   region: 'ap-northeast-1',
+    //   endpoint: 'http://docker.for.mac.localhost:8000',
+    // });
 
-    // const ret = await axios(url);
+    // log.info(await dynamoDBConnection.client.listTables({}).promise());
+    const dynamoDBConnection = new DynamoDBConnection();
+    log.info(await dynamoDBConnection.client.listTables({}).promise());
+
+    const items = new Items();
+    log.info(await items.scanEntries());
+    // log.info(await items.getEntries('1234'));
+    log.info(`log environment is ${JSON.stringify(process.env.DYNAMODB_ENDPOINT)}`);
+
     response = {
-      'statusCode': 200,
-      'body': JSON.stringify({
+      statusCode: 200,
+      body: JSON.stringify({
         message: `hello world service ${userService.test}`,
-        // location: ret.data.trim()
       }),
     };
   } catch (err) {
     log.error(err);
     return {
-      'statusCode': 500,
-      'body': JSON.stringify({
-        message: `${err.message}`
+      statusCode: 500,
+      body: JSON.stringify({
+        message: `${err.message}`,
       }),
     };
   }

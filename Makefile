@@ -7,6 +7,11 @@ deploy:
 deploy-guide:
 	sam deploy --guided
 
+# sam cliを使ってのbuild
+# template.yamlの環境変数を変えたらbuildをしておかないとlocalでendpointを実行したときに環境変数が反映されない
+build:
+	sam build
+
 # localで起動ができる
 start:
 	sam local start-api

@@ -7,14 +7,37 @@ Description: >
 Globals:
   Function:
     Timeout: 3
+Parameters:
+  # Environmentのincludeが可能
+  # Defaultが値でTypeが変数の型
+  DynamoDBEndpoint:
+    Type: String
+    Description: DynamoDB Endpoint
+    Default: http://docker.for.mac.localhost:8000
+  Region:
+    Type: String
+    Description: AWS Deploy Region
+    Default: ap-northeast-1
 
 Resources:
+  CommonResourcesLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: commonResourcesLayer
+      Description: Dependencies for sam app [temp-units-conv]
+      ContentUri: src/commonResourcesLayer/
+      CompatibleRuntimes:
+        - nodejs10.x
   LambdaTypescriptFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
       CodeUri: src/app/
       Handler: app.lambdaHandler
       Runtime: nodejs10.x
+      Environment:
+        Variables:
+          DYNAMODB_ENDPOINT: !Ref DynamoDBEndpoint
+          REGION: !Ref Region
       Events:
         App:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
