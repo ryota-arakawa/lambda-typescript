@@ -7,13 +7,13 @@ export class DynamoDBConnection implements Connection {
   private readonly __client: AWS.DynamoDB;
 
   constructor(options?: {
-    region?: string;
-    endpoint?: string | undefined;
-    enableAWSXray?: boolean | false;
+    region: string;
+    endpoint: string | undefined;
+    enableAWSXray: boolean | false;
   }) {
     const dynamoDBOptions: DynamoDB.ClientConfiguration = {
-      region: options?.region || 'ap-northeast-1',
-      endpoint: options?.endpoint || 'http://docker.for.mac.localhost:8000',
+      region: options?.region || process.env.REGION,
+      endpoint: options?.endpoint || process.env.DYNAMODB_ENDPOINT,
     };
 
     if (options?.enableAWSXray) {
