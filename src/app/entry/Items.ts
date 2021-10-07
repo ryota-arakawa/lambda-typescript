@@ -1,6 +1,6 @@
 import { hashKey, table, attribute } from '@aws/dynamodb-data-mapper-annotations';
 import { DataMapper, DynamoDbTable, ItemNotFoundException } from '@aws/dynamodb-data-mapper';
-import { DynamoDBConnection } from '../connections';
+import { DynamoDBConnection } from '../../commonResourcesLayer/connections';
 import * as log from 'lambda-log';
 
 @table('Items')
