@@ -7,6 +7,13 @@ Description: >
 Globals:
   Function:
     Timeout: 3
+Parameters:
+  # Environmentのincludeが可能
+  # Defaultが値でTypeが変数の型
+  DynamoDBEndpoint:
+    Type: String
+    Description: DynamoDB Endpoint
+    Default: http://docker.for.mac.localhost:8000
 
 Resources:
   CommonResourcesLayer:
@@ -23,6 +30,9 @@ Resources:
       CodeUri: src/app/
       Handler: app.lambdaHandler
       Runtime: nodejs10.x
+      Environment:
+        Variables:
+          DYNAMODB_ENDPOINT: !Ref DynamoDBEndpoint
       Events:
         App:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api

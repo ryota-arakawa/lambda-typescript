@@ -41,6 +41,8 @@ exports.lambdaHandler = async (
 
     const items = new Items();
     log.info(await items.scanEntries());
+    // log.info(await items.getEntries('1234'));
+    log.info(`log environment is ${JSON.stringify(process.env.DYNAMODB_ENDPOINT)}`);
 
     response = {
       statusCode: 200,
