@@ -1,5 +1,4 @@
 const AwsSamPlugin = require('aws-sam-webpack-plugin');
-
 const awsSamPlugin = new AwsSamPlugin();
 
 module.exports = {
@@ -20,6 +19,7 @@ module.exports = {
   // Resolve .ts and .js extensions
   resolve: {
     extensions: ['.ts', '.js'],
+    alias: { '@': '/src' }, // このpropertyがないとimport urlの@のaliasが効かないため追加
   },
 
   // Target node
