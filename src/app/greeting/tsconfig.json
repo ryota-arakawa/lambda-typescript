@@ -2,16 +2,17 @@
   "compilerOptions": {
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "resolveJsonModule": true,
     "target": "es2015",
     "module": "commonjs",
     "allowJs": true,
     "checkJs": true,
     "sourceMap": true,
     "esModuleInterop": true,
-    "baseUrl": ".",
+    "baseUrl": "../../..",
     "paths": {
       "@/*": ["src/*"]
     }
   },
-  "include": ["src/**/*.ts", "src/**/*.js"]
+  "include": ["./**/*"]
 }

@@ -7,13 +7,13 @@ export class DynamoDBConnection implements Connection {
   private readonly __client: AWS.DynamoDB;
 
   constructor(options?: {
-    region: string;
-    endpoint: string | undefined;
+    region: string | false | undefined;
+    endpoint: string | false | undefined;
     enableAWSXray: boolean | false;
   }) {
     const dynamoDBOptions: DynamoDB.ClientConfiguration = {
-      region: options?.region || process.env.REGION,
-      endpoint: options?.endpoint || process.env.DYNAMODB_ENDPOINT,
+      region: options?.region || process?.env?.REGION,
+      endpoint: options?.endpoint || process?.env?.DYNAMODB_ENDPOINT,
     };
 
     if (options?.enableAWSXray) {

@@ -3,3 +3,4 @@ node_modules
 *.map
 app/src/*.js
 localDynamodbData
+dist
