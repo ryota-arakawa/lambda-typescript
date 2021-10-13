@@ -17,6 +17,9 @@ export class ItemsEntry {
 
   @attribute()
   body: string;
+
+  @attribute()
+  status: string;
 }
 
 export class Items extends DynamoDBConnection {
@@ -41,10 +44,12 @@ export class Items extends DynamoDBConnection {
   async addItem() {
     const toSave = Object.assign(new ItemsEntry(), { id: uuidv4() });
 
-    log.info({ toSave }, 'Adding Items');
+    log.info(JSON.stringify({ toSave }), { meta: 'Adding Items' });
 
     const result = await this.mapper.put(toSave);
 
     log.info(`result is ${JSON.stringify(result)}`);
   }
+
+  async updateItem() {}
 }
