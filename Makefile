@@ -42,4 +42,13 @@ list-bucket:
 create-bucket:
 	aws s3 mb s3://$(name)-$(shell date +%s)
 
+# localのs3が空だからといってcloudのs3のbucketが空になることはない
+sync-bucket:
+	aws s3 sync s3 s3://$(target)
+
+# cloudのs3にアップロードする事前準備
+# version情報を切るようにlocalのs3にsam buildした成果物を配置する
+prepare-bucket:
+	mkdir s3
+	rsync -a .aws-sam/build/* ./s3 --exclude "template.yaml"
 
