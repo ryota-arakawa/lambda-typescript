@@ -1,3 +1,6 @@
+# makeコマンドの引数をテストしたいとき
+test:
+	echo $(name)-$(shell date +%s)
 
 deploy:
 	sam deploy
@@ -27,3 +30,16 @@ docker-build-up:
 
 docker-up:
 	docker-compose up
+
+####### s3 #######
+
+# s3のbucket一覧を取得する
+list-bucket:
+	aws s3 ls
+
+# s3のbucketを作成する（regionはprofileのdefault）
+# 例； example-lambda-${currentTimeStamp}
+create-bucket:
+	aws s3 mb s3://$(name)-$(shell date +%s)
+
+
