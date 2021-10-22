@@ -1,0 +1,66 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 'Lambda + Typescript Starter Project
+
+  '
+Globals:
+  Function:
+    Timeout: 3
+Parameters:
+  DynamoDBEndpoint:
+    Type: String
+    Description: DynamoDB Endpoint
+    # output.yamlはcloudformation実行用のyamlファイル（クラウドにあてる用）のためpublicのpath
+    # dynamodbがvpnであれば別スタックで定義してあるvpnのエンドポイントを参照する
+    Default: https://dynamodb.ap-northeast-1.amazonaws.com
+  Region:
+    Type: String
+    Description: AWS Deploy Region
+    Default: ap-northeast-1
+  S3Path:
+    Type: String
+    Default: example-lambda-1634779516
+  CommonResourcesLayerVersion:
+    Type: String
+    Default: v1.0
+  GreetingVersion:
+    Type: String
+    Default: v1.0
+Resources:
+  CommonResourcesLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: commonResourcesLayer
+      Description: Common Resource Layer
+      ContentUri:
+        Bucket: !Ref S3Path
+        Key: !Sub CommonResourcesLayer/${CommonResourcesLayerVersion}.zip
+      CompatibleRuntimes:
+      - nodejs12.x
+    Metadata:
+      BuildMethod: nodejs12.x
+  Greeting:
+    Type: AWS::Serverless::Function
+    Properties:
+      # CodeUriのBucketをParametersの変数にするには予めzip化しておかないといけない
+      # なぜかハードコーディング（s3のフルパス）であればzipしないまま（フォルダーごと）s3にあがっていればデプロイができる
+#      CodeUri: s3://example-lambda-1634779516/Greeting/v1.0
+      CodeUri:
+        Bucket: !Ref S3Path
+        Key: !Sub Greeting/${GreetingVersion}.zip
+      Handler: app.lambdaHandler
+      Runtime: nodejs12.x
+      Environment:
+        Variables:
+          DYNAMODB_ENDPOINT:
+            Ref: DynamoDBEndpoint
+          REGION:
+            Ref: Region
+      Layers:
+      - Ref: CommonResourcesLayer
+      Events:
+        App:
+          Type: Api
+          Properties:
+            Path: /app/greeting
+            Method: get
