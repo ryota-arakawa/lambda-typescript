@@ -4,3 +4,4 @@ node_modules
 app/src/*.js
 localDynamodbData
 dist
+s3/**
