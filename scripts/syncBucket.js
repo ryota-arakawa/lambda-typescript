@@ -15,8 +15,6 @@ const argv = yargs
   .help()
   .argv;
 
-console.log(argv);
-
 (async () => {
   const loadYamlFile = (filename) => {
     return yamlCfn.yamlParse(fs.readFileSync(filename, 'utf-8'));
