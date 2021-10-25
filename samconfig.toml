@@ -3,10 +3,10 @@ version = 0.1
 [default.deploy]
 [default.deploy.parameters]
 stack_name = "lambda-typescript"
-s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-j111qjrdhpr2"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-1pwgs4lu428ma"
 s3_prefix = "lambda-typescript"
 region = "ap-northeast-1"
 confirm_changeset = true
 capabilities = "CAPABILITY_IAM"
-parameter_overrides = "DynamoDBEndpoint=\"https://dynamodb.ap-northeast-1.amazonaws.com\" Region=\"ap-northeast-1\""
+parameter_overrides = "DynamoDBEndpoint=\"https://dynamodb.ap-northeast-1.amazonaws.com\" Region=\"ap-northeast-1\" S3Path=\"example-lambda-1634779516\" CommonResourcesLayerVersion=\"v1.0\" GreetingVersion=\"v1.0\""
 image_repositories = []
