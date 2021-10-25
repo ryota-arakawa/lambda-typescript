@@ -57,11 +57,11 @@ create-bucket:
 # localのs3が空だからといってcloudのs3のbucketが空になることはない
 sync-bucket:
 	make check-directory
-	aws s3 sync s3 s3://$(target)
+	aws s3 sync s3 s3://$(bucketName)
 
 # localのs3フォルダーにs3にアップするためのcompileされたlambdaコードを配置する
 sync-local:
-	cd scripts && node syncBucket.js
+	cd scripts && node syncBucket.js -z
 
 # 既存のtemplate.yamlからs3のpathを参照したtemplateのyamlを生成してくれる
 # make deploy-package bucketName=""
