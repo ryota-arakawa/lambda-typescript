@@ -21,37 +21,48 @@ const argv = yargs
   }
 
   const createDirectory = (createDirectoryPath) => {
-    fs.mkdir(`${localS3Path}/${createDirectoryPath}`, {recursive: true}, (err) => {
-      if (err) {
-        throw err;
-      }
-      console.log(`created directory ${createDirectoryPath}`);
+    return new Promise((resolve, reject) => {
+      fs.mkdir(`${localS3Path}/${createDirectoryPath}`, {recursive: true}, (err) => {
+        if (err) {
+          return reject(err);
+        }
+        console.log(`created directory ${createDirectoryPath}`);
+        return resolve();
+      });
     });
   }
 
   const syncDirectory = (createDirectoryPath, resourceName) => {
-    const localS3SyncTargetPath = `${localS3Path}/${createDirectoryPath}`;
-    const samSyncTargetPath = `${samBuildPath}/${resourceName}`;
+    return new Promise((resolve, reject) => {
+      const localS3SyncTargetPath = `${localS3Path}/${createDirectoryPath}`;
+      const samSyncTargetPath = `${samBuildPath}/${resourceName}`;
 
-    exec(`rsync -a ${samSyncTargetPath}/* ${localS3SyncTargetPath}`,
-      (err, stdout, stderr) => {
-        if (err) {
-          throw err;
+      exec(`rsync -a ${samSyncTargetPath}/* ${localS3SyncTargetPath}`,
+        (err, stdout, stderr) => {
+          if (err) {
+            return reject(err);
+          }
+
+          return resolve();
         }
-      }
-    )
+      )
+    });
   }
 
   const createZip = (createDirectoryPath, version) => {
-    const localS3SyncTargetPath = `${localS3Path}/${createDirectoryPath}`;
+    return new Promise((resolve, reject) => {
+      const localS3SyncTargetPath = `${localS3Path}/${createDirectoryPath}`;
 
-    exec(`cd ${localS3SyncTargetPath} && zip -r ../${version}.zip *`,
-      (err, stdout, stderr) => {
-        if (err) {
-          throw err;
+      exec(`cd ${localS3SyncTargetPath} && zip -r ../${version}.zip *`,
+        (err, stdout, stderr) => {
+          if (err) {
+            return reject(err);
+          }
+
+          return resolve();
         }
-      }
-    )
+      )
+    });
   }
 
   try {
@@ -68,22 +79,26 @@ const argv = yargs
     const templateYamlContents = loadYamlFile(templateYamlPath);
 
     const deployResources = Object.keys(templateYamlContents.Resources).reduce((collection, key) => {
+      if (!templateYamlContents.Parameters[key + 'Version']) {
+        return collection;
+      }
+
       collection.push({
         resourceName: key,
         version: templateYamlContents.Parameters[key + 'Version'].Default, // parametersは後ろにVersionをつけないとdeployでエラーになる
-        createDirectoryPath: `${key}/${templateYamlContents.Parameters[key].Default}`
+        createDirectoryPath: `${key}/${templateYamlContents.Parameters[key + 'Version'].Default}`
       });
       return collection;
     }, []);
 
-    deployResources.forEach((deployResource) => {
-      createDirectory(deployResource.createDirectoryPath);
-      syncDirectory(deployResource.createDirectoryPath, deployResource.resourceName);
+    for await (const deployResource of deployResources) {
+      await createDirectory(deployResource.createDirectoryPath);
+      await syncDirectory(deployResource.createDirectoryPath, deployResource.resourceName);
 
       if (argv.zip) {
-        createZip(deployResource.createDirectoryPath, deployResource.version);
+        await createZip(deployResource.createDirectoryPath, deployResource.version);
       }
-    });
+    }
   } catch (e) {
     console.error(e);
     process.exit(1);
