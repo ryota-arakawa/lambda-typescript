@@ -1,11 +1,14 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: 'Lambda + Typescript Starter Project
+Description: 'Lambda + Typescript Starter Project'
 
-  '
 Globals:
   Function:
     Timeout: 3
+
+# --------------------------------------------- #
+# Parameters
+# --------------------------------------------- #
 Parameters:
   DynamoDBEndpoint:
     Type: String
@@ -26,7 +29,28 @@ Parameters:
   GreetingVersion:
     Type: String
     Default: v1.0
+
+# --------------------------------------------- #
+# Resources
+# --------------------------------------------- #
 Resources:
+  # --------------------------------------------- #
+  # Security Group
+  # --------------------------------------------- #
+  LambdaSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow http to client host
+      VpcId: !ImportValue example-vpc-vpc-id
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+
+  # --------------------------------------------- #
+  # Lambda Layers
+  # --------------------------------------------- #
   CommonResourcesLayer:
     Type: AWS::Serverless::LayerVersion
     Properties:
@@ -39,6 +63,10 @@ Resources:
       - nodejs12.x
     Metadata:
       BuildMethod: nodejs12.x
+
+  # --------------------------------------------- #
+  # Lambda Functions
+  # --------------------------------------------- #
   Greeting:
     Type: AWS::Serverless::Function
     Properties:
@@ -58,9 +86,49 @@ Resources:
             Ref: Region
       Layers:
       - Ref: CommonResourcesLayer
-      Events:
-        App:
-          Type: Api
-          Properties:
-            Path: /app/greeting
-            Method: get
+#      Events:
+#        App:
+#          Type: Api
+#          Properties:
+#            Path: /app/greeting
+#            Method: get
+      VpcConfig:
+        SecurityGroupIds:
+          - !Ref LambdaSecurityGroup
+        SubnetIds:
+          # マルチAZならここを増やす
+          - 'Fn::ImportValue': !Sub 'example-vpc-public-az-a-subnet'
+
+  # --------------------------------------------- #
+  # Lambda Invoke Permission
+  # --------------------------------------------- #
+  GreetingInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt Greeting.Arn
+      Action: 'lambda:InvokeFunction'
+      Principal: elasticloadbalancing.amazonaws.com
+
+  # --------------------------------------------- #
+  # TargetGroup
+  # --------------------------------------------- #
+  TargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    DependsOn: GreetingInvokePermission
+    Properties:
+      TargetType: lambda
+      Targets:
+        - Id: !GetAtt Greeting.Arn
+
+# --------------------------------------------- #
+# Outputs
+# --------------------------------------------- #
+Outputs:
+  LambdaGreetingArn:
+    Value: !GetAtt Greeting.Arn
+    Export:
+      Name: lambda-greeting-arn
+  TargetGroupArn:
+    Value: !Ref TargetGroup
+    Export:
+      Name: target-group-arn

@@ -71,12 +71,22 @@ create-package-yaml:
 		--s3-bucket $(bucketName) \
 		--output-template-file output.yaml
 
-# s3のpathを参照したtemplateのyamlを基にdeployを行う
-# make deploy-package stackName=""
-deploy-package:
+# s3のpathを参照したtemplateのyamlを基にsamコマンド経由でdeployを行う
+# make sam-deploy-package stackName=""
+sam-deploy-package:
 	sam deploy \
 		--template-file output.yaml \
 		--stack-name $(stackName) \
+		--capabilities CAPABILITY_IAM
+
+# s3のpathを参照したtemplateのyamlを基にcloudformationコマンド経由でdeployを行う
+# make deploy-package stackName=""
+deploy-package:
+	aws cloudformation deploy \
+		--stack-name $(stackName)-lambda \
+		--template-file output.yaml \
+		--parameter-overrides \
+		file://parameters/lambda.json \
 		--capabilities CAPABILITY_IAM
 
 # cloudのs3にアップロードする事前準備
