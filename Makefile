@@ -63,6 +63,13 @@ sync-bucket:
 	make check-directory
 	aws s3 sync s3 s3://$(bucketName)
 
+# buildやsync-local、sync-bucketを順番に実行するのが面倒なのでひとまとめにしたコマンド
+# src配下のソースコードをcompileした後に実行する
+sync-deploy:
+	make build
+	make sync-local
+	make sync-bucket bucketName="$(bucketName)"
+
 # 既存のtemplate.yamlからs3のpathを参照したtemplateのyamlを生成してくれる
 # make deploy-package bucketName=""
 create-package-yaml:
