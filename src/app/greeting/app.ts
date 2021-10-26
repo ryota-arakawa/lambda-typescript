@@ -3,7 +3,7 @@ import { UserService } from './service';
 import { DynamoDBConnection } from '@/layers/commonResourcesLayer/connections';
 import { Items } from '@/layers/commonResourcesLayer/entry';
 
-let response;
+let response = {};
 
 exports.lambdaHandler = async (
   event: AWSLambda.APIGatewayEvent,
@@ -35,6 +35,9 @@ exports.lambdaHandler = async (
     await items.addItem();
 
     response = {
+      headers: {
+        'Content-Type': 'application/json'
+      },
       statusCode: 200,
       body: JSON.stringify({
         message: `hello world service ${userService.test}`,
@@ -43,6 +46,9 @@ exports.lambdaHandler = async (
   } catch (err) {
     log.error(err);
     return {
+      headers: {
+        'Content-Type': 'application/json'
+      },
       statusCode: 500,
       body: JSON.stringify({
         message: `${err.message}`,
@@ -50,12 +56,14 @@ exports.lambdaHandler = async (
     };
   }
 
-  response = {
-    statusCode: 200,
-    body: JSON.stringify({
-      message: `hello world service test`,
-    }),
-  };
+  log.info(`response is ${response}`);
+
+  // response = {
+  //   statusCode: 200,
+  //   body: JSON.stringify({
+  //     message: `hello world service test`,
+  //   }),
+  // };
 
   return response;
 };
