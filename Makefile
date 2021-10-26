@@ -54,14 +54,14 @@ list-bucket:
 create-bucket:
 	aws s3 mb s3://$(name)-$(shell date +%s)
 
+# localのs3フォルダーにs3にアップするためのcompileされたlambdaコードを配置する
+sync-local:
+	cd scripts && node syncBucket.js -z
+
 # localのs3が空だからといってcloudのs3のbucketが空になることはない
 sync-bucket:
 	make check-directory
 	aws s3 sync s3 s3://$(bucketName)
-
-# localのs3フォルダーにs3にアップするためのcompileされたlambdaコードを配置する
-sync-local:
-	cd scripts && node syncBucket.js -z
 
 # 既存のtemplate.yamlからs3のpathを参照したtemplateのyamlを生成してくれる
 # make deploy-package bucketName=""
@@ -70,6 +70,9 @@ create-package-yaml:
 		--template-file template.yaml \
 		--s3-bucket $(bucketName) \
 		--output-template-file output.yaml
+
+####### deploy #######
+# スタックを作成するときに実行するコマンド
 
 # s3のpathを参照したtemplateのyamlを基にsamコマンド経由でdeployを行う
 # make sam-deploy-package stackName=""
@@ -88,6 +91,25 @@ deploy-package:
 		--parameter-overrides \
 		file://parameters/lambda.json \
 		--capabilities CAPABILITY_IAM
+
+####### update #######
+# すでにスタックがあってバージョン情報などを更新する時
+
+# バージョン情報や環境変数などの要素を更新したいときに実行する
+# change-set-nameはversion1.0.1などの小数点は入力できない
+update-package:
+	aws cloudformation create-change-set \
+		--stack-name $(stackName)-lambda \
+		--template-body file://output.yaml \
+		--change-set-name $(changeSetName) \
+		--capabilities CAPABILITY_IAM
+
+# スタックを更新するための実行コマンド
+# 事前に同じchangeSetNameをupdate-packageで行なってからexecute-update-packageを実行することができる
+execute-update-package:
+	aws cloudformation execute-change-set \
+		--stack-name $(stackName)-lambda \
+		--change-set-name $(changeSetName)
 
 # cloudのs3にアップロードする事前準備
 # version情報を切るようにlocalのs3にsam buildした成果物を配置する
