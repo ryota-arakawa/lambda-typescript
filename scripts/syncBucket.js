@@ -1,7 +1,8 @@
 const fs = require('fs');
 const yamlCfn = require('yaml-cfn');
-const templateYamlPath = '../output.yaml';
 const localS3Path = '../s3';
+// lambda.yaml別のgitリポジトリで管理
+const templateYamlPath = '../../cloudformation-example/lambda.yaml';
 const samBuildPath = '../.aws-sam/build';
 const {exec} = require('child_process');
 const yargs = require('yargs');
