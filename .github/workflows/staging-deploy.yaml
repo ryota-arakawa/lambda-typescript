@@ -15,10 +15,11 @@ jobs:
     permissions:
       id-token: write
     steps:
-      - name: Typescript Compile
-        uses: actions/setup-node@v1
+      - uses: actions/setup-node@v1
         with:
           node-version: '12.x'
+
+      - name: Typescript Compile
         run: |
           cd ${{ RESOURCE_PATH }}/app/greeting && npm run install
           cd ${{ RESOURCE_PATH }}/app/greeting && npm run build:dev
