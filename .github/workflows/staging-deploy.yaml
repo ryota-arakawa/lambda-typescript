@@ -21,10 +21,10 @@ jobs:
 
       - name: Typescript Compile
         run: |
-          cd ${{ RESOURCE_PATH }}/app/greeting && npm run install
-          cd ${{ RESOURCE_PATH }}/app/greeting && npm run build:dev
-          cd ${{ RESOURCE_PATH }}/layers/greeting && npm run install
-          cd ${{ RESOURCE_PATH }}/layers/greeting && npm run build:dev
+          cd ${{ env.RESOURCE_PATH }}/app/greeting && npm run install
+          cd ${{ env.RESOURCE_PATH }}/app/greeting && npm run build:dev
+          cd ${{ env.RESOURCE_PATH }}/layers/greeting && npm run install
+          cd ${{ env.RESOURCE_PATH }}/layers/greeting && npm run build:dev
 
       - name: Get AWS Credentials Using OIDC
         id: aws_sts_creds
