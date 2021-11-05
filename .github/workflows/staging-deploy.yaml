@@ -39,6 +39,7 @@ jobs:
           echo ::set-output name=aws_secret_access_key::$AWS_SECRET_ACCESS_KEY
           echo ::set-output name=aws_session_token::$AWS_SESSION_TOKEN
           echo ::set-output name=aws_default_region::$AWS_DEFAULT_REGION
+          
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
