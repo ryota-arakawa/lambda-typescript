@@ -6,7 +6,7 @@ on:
       - feature/staging
 env:
   REGION: ap-northeast-1
-  AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
+  SECRETS_AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
 
 jobs:
   build:
@@ -18,7 +18,7 @@ jobs:
       - name: Get AWS Credentials Using OIDC
         id: aws_sts_creds
         run: |
-          export AWS_ROLE_ARN=${{ env.AWS_ROLE_ARN }}
+          export AWS_ROLE_ARN=${{ env.SECRETS_AWS_ROLE_ARN }}
           export AWS_WEB_IDENTITY_TOKEN_FILE=/tmp/awscreds
           export AWS_DEFAULT_REGION=${{ env.REGION }}
 
