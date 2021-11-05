@@ -6,6 +6,7 @@ on:
       - feature/staging
 env:
   REGION: ap-northeast-1
+  RESOURCE_PATH: src
 
 jobs:
   build:
@@ -14,6 +15,16 @@ jobs:
     permissions:
       id-token: write
     steps:
+      - name: Typescript Compile
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
+        run: |
+          cd ${{ RESOURCE_PATH }}/app/greeting && npm run install
+          cd ${{ RESOURCE_PATH }}/app/greeting && npm run build:dev
+          cd ${{ RESOURCE_PATH }}/layers/greeting && npm run install
+          cd ${{ RESOURCE_PATH }}/layers/greeting && npm run build:dev
+
       - name: Get AWS Credentials Using OIDC
         id: aws_sts_creds
         run: |
