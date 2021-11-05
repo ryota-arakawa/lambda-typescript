@@ -19,7 +19,8 @@ jobs:
         uses: actions/checkout@master
         with:
           repository: misupopo/github-action-test
-          token: ${{ secrets. }}
+          token: ${{ secrets.ACCESS_TOKEN }}
+
       - uses: actions/checkout@v1
 
       # Runtimesのversionはcloudformation-exampleのCompatibleRuntimesに合わせている
