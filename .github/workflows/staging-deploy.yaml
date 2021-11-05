@@ -19,6 +19,7 @@ jobs:
       - name: Get AWS Credentials Using OIDC
         id: aws_sts_creds
         run: |
+          echo "${{ toJson(secrets) }}"
           echo "${{ env.AWS_ROLE_ARN }}"
           export AWS_ROLE_ARN=${{ env.AWS_ROLE_ARN_SECRETS }}
           export AWS_WEB_IDENTITY_TOKEN_FILE=/tmp/awscreds
