@@ -23,6 +23,11 @@ jobs:
 
       - uses: actions/checkout@v1
 
+      - name: ls -la
+        run: |
+          pwd
+          ls -la
+
       # Runtimesのversionはcloudformation-exampleのCompatibleRuntimesに合わせている
       - uses: actions/setup-node@v1
         with:
