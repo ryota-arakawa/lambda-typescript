@@ -31,6 +31,7 @@ jobs:
         run: |
           npm install
 
+      # applicationのcompileをするためには共通で使用しているLambda Layersからnpm installを事前にしておかなければならない
       - name: Typescript Compile greeting
         working-directory: ${{ env.RESOURCE_PATH }}/app/greeting
         run: |
