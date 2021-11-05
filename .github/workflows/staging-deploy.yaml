@@ -27,6 +27,7 @@ jobs:
         run: |
           pwd
           ls -la
+          ls -la ../
 
       # Runtimesのversionはcloudformation-exampleのCompatibleRuntimesに合わせている
       - uses: actions/setup-node@v1
