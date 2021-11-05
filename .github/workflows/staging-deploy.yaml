@@ -15,11 +15,18 @@ jobs:
     permissions:
       id-token: write
     steps:
+      # privateのリポジトリを取得するには事前にdeveloper settingからpersonal access tokenで発行したACCESS_TOKENを使う必要がある
       - name: Check out Cloudformation Repository
         uses: actions/checkout@master
         with:
           repository: misupopo/github-action-test
           token: ${{ secrets.ACCESS_TOKEN }}
+
+      - name: ls -la
+        run: |
+          pwd
+          ls -la
+          ls -la ../
 
       - uses: actions/checkout@v1
 
