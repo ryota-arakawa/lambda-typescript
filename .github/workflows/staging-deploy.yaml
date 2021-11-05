@@ -25,9 +25,9 @@ jobs:
         run: |
           pwd
           ls -la
-          cd ${{ env.RESOURCE_PATH }}/app/greeting && npm run install
+          cd ${{ env.RESOURCE_PATH }}/app/greeting && npm install
           cd ${{ env.RESOURCE_PATH }}/app/greeting && npm run build:dev
-          cd ${{ env.RESOURCE_PATH }}/layers/greeting && npm run install
+          cd ${{ env.RESOURCE_PATH }}/layers/greeting && npm install
           cd ${{ env.RESOURCE_PATH }}/layers/greeting && npm run build:dev
 
       - name: Get AWS Credentials Using OIDC
