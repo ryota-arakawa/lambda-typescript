@@ -21,16 +21,24 @@ jobs:
         with:
           node-version: '12.x'
 
-      - name: Typescript Compile greeting
+      - name: Typescript Install greeting
         working-directory: ${{ env.RESOURCE_PATH }}/app/greeting
         run: |
           npm install
+
+      - name: Typescript Install commonResourcesLayer
+        working-directory: ${{ env.RESOURCE_PATH }}/layers/commonResourcesLayer
+        run: |
+          npm install
+
+      - name: Typescript Compile greeting
+        working-directory: ${{ env.RESOURCE_PATH }}/app/greeting
+        run: |
           npm run build:dev
 
       - name: Typescript Compile commonResourcesLayer
         working-directory: ${{ env.RESOURCE_PATH }}/layers/commonResourcesLayer
         run: |
-          npm install
           npm run build:dev
 
       - name: Get AWS Credentials Using OIDC
