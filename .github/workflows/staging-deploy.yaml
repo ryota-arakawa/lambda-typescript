@@ -17,7 +17,7 @@ jobs:
       - name: Get AWS Credentials Using OIDC
         id: aws_sts_creds
         run: |
-          export AWS_ROLE_ARN=arn:aws:iam::932446063073:role/ExampleGithubRole
+          export AWS_ROLE_ARN=${{ secrets.AWS_ROLE_ARN }}
           export AWS_WEB_IDENTITY_TOKEN_FILE=/tmp/awscreds
           export AWS_DEFAULT_REGION=${{ env.REGION }}
 
