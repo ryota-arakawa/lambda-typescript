@@ -28,6 +28,7 @@ jobs:
       - name: Copy Yaml
         run: |
           ls -la
+          mkdir yamls
           cp lambda.yaml yamls/lambda.yaml
 
       - name: ls -la
