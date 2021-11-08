@@ -22,8 +22,12 @@ jobs:
         with:
           repository: misupopo/cloudformation-example
           token: ${{ secrets.ACCESS_TOKEN }}
-          name: cloudformationPath
-          path: lambda.yaml
+          name: cloudformationYamls
+          path: yamls
+
+      - name: Copy Yaml
+        run: |
+          cp lambda.yaml yamls/
 
       - name: ls -la
         run: |
