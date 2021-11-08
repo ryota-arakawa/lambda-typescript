@@ -47,7 +47,7 @@ jobs:
       - uses: actions/checkout@v1
         with:
           name: cloudformationYamls
-          path: yamls
+          path: yamls/lambda.yaml
 
       - name: ls -la
         run: |
