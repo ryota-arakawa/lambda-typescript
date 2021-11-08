@@ -134,8 +134,5 @@ jobs:
           npm i
           cp cloudformation-example/lambda.yaml ./
           ls -la
-#          touch lambda.yaml
-#          CLOUDFORMATION_LAMBDA_CONTENT="${{ steps.cloudformation.outputs.cloudformation_lambda_content }}"
-#          echo $CLOUDFORMATION_LAMBDA_CONTENT > lambda.yaml
           make sync-deploy bucketName="${{ env.BUCKET_NAME }}" yamlPath="../lambda.yaml"
 
