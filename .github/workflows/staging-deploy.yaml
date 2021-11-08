@@ -31,7 +31,7 @@ jobs:
       - name: Export Lambda Yaml Content
         id: cloudformation
         run: |
-          .lambda.yaml > $CLOUDFORMATION_LAMBDA_CONTENT
+          lambda.yaml > $CLOUDFORMATION_LAMBDA_CONTENT
           echo ::set-output name=cloudformation_lambda_content::$CLOUDFORMATION_LAMBDA_CONTENT
 
       - uses: actions/checkout@v1
