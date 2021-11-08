@@ -119,7 +119,8 @@ jobs:
         run: |
           npm i
           touch lambda.yaml
-          echo ${{ steps.cloudformation.outputs.cloudformation_lambda_content }} > lambda.yaml
+          CLOUDFORMATION_LAMBDA_CONTENT=${{ steps.cloudformation.outputs.cloudformation_lambda_content }}
+          echo $CLOUDFORMATION_LAMBDA_CONTENT > lambda.yaml
           cat lambda.yaml
 #          make sync-deploy bucketName="${{ env.BUCKET_NAME }}" yamlPath="../lambda.yaml"
 
