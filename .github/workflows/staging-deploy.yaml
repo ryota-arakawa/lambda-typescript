@@ -7,6 +7,7 @@ on:
 env:
   REGION: ap-northeast-1
   RESOURCE_PATH: src
+  BUCKET_NAME: example-lambda-1634779516
 
 jobs:
   build:
@@ -111,5 +112,8 @@ jobs:
         run: |
           touch lambda.yaml
           echo ${{ steps.cloudformation.outputs.cloudformation_lambda_content }} > lambda.yaml
-          cat lambda.yaml
+
+      - name: Sync Deploy
+        run: |
+          make sync-deploy bucketName="${{ env.BUCKET_NAME }}"
 
