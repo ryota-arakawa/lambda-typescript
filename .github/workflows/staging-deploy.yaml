@@ -22,8 +22,8 @@ jobs:
         with:
           repository: misupopo/cloudformation-example
           token: ${{ secrets.ACCESS_TOKEN }}
-          name: cloudformationYamls
-          path: yamls
+#          name: cloudformationYamls
+#          path: yamls
 
       - name: Copy Yaml
         run: |
@@ -44,6 +44,9 @@ jobs:
           echo ::set-output name=cloudformation_lambda_content::$CLOUDFORMATION_LAMBDA_CONTENT
 
       - uses: actions/checkout@v1
+        with:
+          name: cloudformationYamls
+          path: yamls
 
       - name: ls -la
         run: |
