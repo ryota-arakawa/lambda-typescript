@@ -25,11 +25,11 @@ jobs:
 #          name: cloudformationYamls
 #          path: yamls
 
-      - name: Copy Yaml
-        run: |
-          ls -la
-          mkdir yamls
-          cp lambda.yaml yamls/lambda.yaml
+#      - name: Copy Yaml
+#        run: |
+#          ls -la
+#          mkdir yamls
+#          cp lambda.yaml yamls/lambda.yaml
 
       - name: ls -la
         run: |
@@ -45,16 +45,16 @@ jobs:
           echo ::set-output name=cloudformation_lambda_content::$CLOUDFORMATION_LAMBDA_CONTENT
 
       - uses: actions/checkout@v1
-        with:
-          name: cloudformationYamls
-          file: yamls/lambda.yaml
+#        with:
+#          name: cloudformationYamls
+#          file: yamls/lambda.yaml
 
       - name: ls -la
         run: |
           pwd
           ls -la
           ls -la ../
-          cat ../lambda.yaml
+#          cat ../lambda.yaml
 
       # Runtimesのversionはcloudformation-exampleのCompatibleRuntimesに合わせている
       - uses: actions/setup-node@v1
@@ -130,10 +130,11 @@ jobs:
       # scripts配下からみた相対パス
       - name: Sync Deploy
         run: |
+          git clone "https://${{ secrets.ACCESS_TOKEN }}@github.com/misupopo/cloudformation-example"
           npm i
           ls -la
-#          touch lambda.yaml
-#          CLOUDFORMATION_LAMBDA_CONTENT="${{ steps.cloudformation.outputs.cloudformation_lambda_content }}"
+          touch lambda.yaml
+          CLOUDFORMATION_LAMBDA_CONTENT="${{ steps.cloudformation.outputs.cloudformation_lambda_content }}"
 #          echo $CLOUDFORMATION_LAMBDA_CONTENT > lambda.yaml
 #          sed -n 1p lambda.yaml
 #          make sync-deploy bucketName="${{ env.BUCKET_NAME }}" yamlPath="../lambda.yaml"
