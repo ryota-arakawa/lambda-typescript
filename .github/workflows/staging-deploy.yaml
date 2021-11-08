@@ -39,6 +39,9 @@ jobs:
           echo ::set-output name=cloudformation_lambda_content::$CLOUDFORMATION_LAMBDA_CONTENT
 
       - uses: actions/checkout@v1
+        with:
+          name: cloudformationPath
+          path: ./
 
       - name: ls -la
         run: |
@@ -119,9 +122,6 @@ jobs:
 
       # scripts配下からみた相対パス
       - name: Sync Deploy
-        with:
-          name: cloudformationPath
-          path: ./
         run: |
           npm i
           ls -la
