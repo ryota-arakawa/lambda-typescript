@@ -23,7 +23,7 @@ jobs:
           repository: misupopo/cloudformation-example
           token: ${{ secrets.ACCESS_TOKEN }}
           name: cloudformationPath
-          path: ./
+          path: lambda.yaml
 
       - name: ls -la
         run: |
@@ -41,7 +41,7 @@ jobs:
       - uses: actions/checkout@v1
         with:
           name: cloudformationPath
-          path: ./
+          path: lambda.yaml
 
       - name: ls -la
         run: |
