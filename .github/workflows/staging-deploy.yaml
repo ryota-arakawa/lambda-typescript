@@ -121,5 +121,5 @@ jobs:
           touch lambda.yaml
           echo ${{ steps.cloudformation.outputs.cloudformation_lambda_content }} > lambda.yaml
           cat lambda.yaml
-          make sync-deploy bucketName="${{ env.BUCKET_NAME }}" yamlPath="../lambda.yaml"
+#          make sync-deploy bucketName="${{ env.BUCKET_NAME }}" yamlPath="../lambda.yaml"
 
