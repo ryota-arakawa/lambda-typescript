@@ -1,8 +1,6 @@
 const fs = require('fs');
 const yamlCfn = require('yaml-cfn');
 const localS3Path = '../s3';
-// lambda.yaml別のgitリポジトリで管理
-const templateYamlPath = '../../cloudformation-example/lambda.yaml';
 const samBuildPath = '../.aws-sam/build';
 const {exec} = require('child_process');
 const yargs = require('yargs');
@@ -13,8 +11,17 @@ const argv = yargs
     description: 'create zip directory',
     demandOption: true
   })
+  .option('yamlPath', {
+    alias: 'y',
+    description: 'target yaml path',
+    demandOption: true
+  })
   .help()
   .argv;
+
+// lambda.yamlは別のgitリポジトリで管理
+// パスはscriptsディレクトリからみた相対パス
+const templateYamlPath = argv.yamlPath || '../../cloudformation-example/lambda.yaml';
 
 (async () => {
   const loadYamlFile = (filename) => {

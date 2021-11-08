@@ -56,7 +56,7 @@ create-bucket:
 
 # localのs3フォルダーにs3にアップするためのcompileされたlambdaコードを配置する
 sync-local:
-	cd scripts && node syncBucket.js -z
+	cd scripts && node syncBucket.js -z --yamlPath="$(yamlPath)"
 
 # localのs3が空だからといってcloudのs3のbucketが空になることはない
 sync-bucket:
@@ -67,7 +67,7 @@ sync-bucket:
 # src配下のソースコードをcompileした後に実行する
 sync-deploy:
 	make build
-	make sync-local
+	make sync-local yamlPath="$(yamlPath)"
 	make sync-bucket bucketName="$(bucketName)"
 
 # 既存のtemplate.yamlからs3のpathを参照したtemplateのyamlを生成してくれる
