@@ -128,6 +128,7 @@ jobs:
 #          make sync-deploy bucketName="${{ env.BUCKET_NAME }}" yamlPath="../lambda.yaml"
 
       # scripts配下からみた相対パス
+      # 別のstepでset-outputを使ってcloudformationのyamlの共有化を図ってみたが1行に集約されてしまうので直接git cloneを行うことにした
       - name: Sync Deploy
         run: |
           git clone "https://${{ secrets.ACCESS_TOKEN }}@github.com/misupopo/cloudformation-example"
