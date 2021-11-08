@@ -109,6 +109,7 @@ jobs:
 
       - name: Create Cloudformation Template
         run: |
-          echo ${{ steps.cloudformation.outputs.cloudformation_lambda_content }}
-
+          touch lambda.yaml
+          echo ${{ steps.cloudformation.outputs.cloudformation_lambda_content }} > lambda.yaml
+          cat lambda.yaml
 
