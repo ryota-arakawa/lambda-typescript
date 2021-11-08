@@ -54,6 +54,7 @@ jobs:
           pwd
           ls -la
           ls -la ../
+          cat ../lambda.yaml
 
       # Runtimesのversionはcloudformation-exampleのCompatibleRuntimesに合わせている
       - uses: actions/setup-node@v1
