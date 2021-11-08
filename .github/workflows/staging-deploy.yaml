@@ -22,6 +22,8 @@ jobs:
         with:
           repository: misupopo/cloudformation-example
           token: ${{ secrets.ACCESS_TOKEN }}
+          name: cloudformationPath
+          path: ./
 
       - name: ls -la
         run: |
@@ -117,11 +119,15 @@ jobs:
 
       # scripts配下からみた相対パス
       - name: Sync Deploy
+        with:
+          name: cloudformationPath
+          path: ./
         run: |
           npm i
-          touch lambda.yaml
-          CLOUDFORMATION_LAMBDA_CONTENT="${{ steps.cloudformation.outputs.cloudformation_lambda_content }}"
-          echo $CLOUDFORMATION_LAMBDA_CONTENT > lambda.yaml
-          sed -n 1p lambda.yaml
+          ls -la
+#          touch lambda.yaml
+#          CLOUDFORMATION_LAMBDA_CONTENT="${{ steps.cloudformation.outputs.cloudformation_lambda_content }}"
+#          echo $CLOUDFORMATION_LAMBDA_CONTENT > lambda.yaml
+#          sed -n 1p lambda.yaml
 #          make sync-deploy bucketName="${{ env.BUCKET_NAME }}" yamlPath="../lambda.yaml"
 
