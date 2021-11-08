@@ -132,9 +132,10 @@ jobs:
         run: |
           git clone "https://${{ secrets.ACCESS_TOKEN }}@github.com/misupopo/cloudformation-example"
           npm i
+          cp cloudformation-example/lambda.yaml ./
           ls -la
-          touch lambda.yaml
-          CLOUDFORMATION_LAMBDA_CONTENT="${{ steps.cloudformation.outputs.cloudformation_lambda_content }}"
+#          touch lambda.yaml
+#          CLOUDFORMATION_LAMBDA_CONTENT="${{ steps.cloudformation.outputs.cloudformation_lambda_content }}"
 #          echo $CLOUDFORMATION_LAMBDA_CONTENT > lambda.yaml
 #          sed -n 1p lambda.yaml
 #          make sync-deploy bucketName="${{ env.BUCKET_NAME }}" yamlPath="../lambda.yaml"
