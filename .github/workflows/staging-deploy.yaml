@@ -33,6 +33,7 @@ jobs:
         id: cloudformation
         run: |
           CLOUDFORMATION_LAMBDA_CONTENT=`cat lambda.yaml`
+          echo $CLOUDFORMATION_LAMBDA_CONTENT
           echo ::set-output name=cloudformation_lambda_content::$CLOUDFORMATION_LAMBDA_CONTENT
 
       - uses: actions/checkout@v1
