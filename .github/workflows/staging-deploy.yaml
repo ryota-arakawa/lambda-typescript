@@ -117,6 +117,7 @@ jobs:
       - name: Sync Deploy
         run: |
           npm i
+          ls -la
           cat lambda.yaml
           make sync-deploy bucketName="${{ env.BUCKET_NAME }}" yamlPath="../lambda.yaml"
 
