@@ -113,6 +113,7 @@ jobs:
           touch lambda.yaml
           echo ${{ steps.cloudformation.outputs.cloudformation_lambda_content }} > lambda.yaml
 
+      # scripts配下からみた相対パス
       - name: Sync Deploy
         run: |
           npm i
