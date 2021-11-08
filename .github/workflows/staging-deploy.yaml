@@ -23,7 +23,7 @@ jobs:
           repository: misupopo/cloudformation-example
           token: ${{ secrets.ACCESS_TOKEN }}
           name: cloudformationPath
-          path: lambda-typescript
+          path: lambda.yaml
 
       - name: ls -la
         run: |
@@ -39,9 +39,6 @@ jobs:
           echo ::set-output name=cloudformation_lambda_content::$CLOUDFORMATION_LAMBDA_CONTENT
 
       - uses: actions/checkout@v1
-        with:
-          name: cloudformationPath
-          path: lambda-typescript
 
       - name: ls -la
         run: |
