@@ -107,6 +107,8 @@ jobs:
       - name: Show SAM Build
         run: sam --version
 
-
+      - name: Create Cloudformation Template
+        run: |
+          echo ${{ steps.cloudformation.outputs.cloudformation_lambda_content }}
 
 
