@@ -1,0 +1,133 @@
+name: Staging Deploy
+
+on:
+  push:
+    branches:
+      - feature/staging
+env:
+  REGION: ap-northeast-1
+  RESOURCE_PATH: src
+  # BUCKET_NAMEはlambdaのソースコードのS3のアップロードのターゲット
+  BUCKET_NAME: example-lambda-1634779516
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    steps:
+      # privateのリポジトリを取得するには事前にdeveloper settingからpersonal access tokenで発行したACCESS_TOKENを使う必要がある
+      - name: Check out Cloudformation Repository
+        uses: actions/checkout@master
+        with:
+          repository: misupopo/cloudformation-example
+          token: ${{ secrets.ACCESS_TOKEN }}
+      # Sync DeployのStepで直接git cloneを行うため、変数として吐き出す必要がないためコメントアウト
+#          name: cloudformationYamls
+#          path: yamls
+
+      # Sync DeployのStepで直接git cloneを行うため、変数として吐き出す必要がないためコメントアウト
+#      - name: Copy Yaml
+#        run: |
+#          ls -la
+#          mkdir yamls
+#          cp lambda.yaml yamls/lambda.yaml
+
+      # Sync DeployのStepで直接git cloneを行うため、変数として吐き出す必要がないためコメントアウト
+#      - name: Export Lambda Yaml Content
+#        id: cloudformation
+#        run: |
+#          CLOUDFORMATION_LAMBDA_CONTENT=`cat lambda.yaml`
+#          echo $CLOUDFORMATION_LAMBDA_CONTENT
+#          echo ::set-output name=cloudformation_lambda_content::$CLOUDFORMATION_LAMBDA_CONTENT
+
+      - uses: actions/checkout@v1
+      # Sync DeployのStepで直接git cloneを行うため、変数として吐き出す必要がないためコメントアウト
+#        with:
+#          name: cloudformationYamls
+#          file: yamls/lambda.yaml
+
+      # Runtimesのversionはcloudformation-exampleのCompatibleRuntimesに合わせている
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
+
+      - name: Typescript Install greeting
+        working-directory: ${{ env.RESOURCE_PATH }}/app/greeting
+        run: |
+          npm install
+
+      - name: Typescript Install commonResourcesLayer
+        working-directory: ${{ env.RESOURCE_PATH }}/layers/commonResourcesLayer
+        run: |
+          npm install
+
+      # applicationのcompileをするためには共通で使用しているLambda Layersからnpm installを事前にしておかなければならない
+      - name: Typescript Compile greeting
+        working-directory: ${{ env.RESOURCE_PATH }}/app/greeting
+        run: |
+          npm run build:dev
+
+      - name: Typescript Compile commonResourcesLayer
+        working-directory: ${{ env.RESOURCE_PATH }}/layers/commonResourcesLayer
+        run: |
+          npm run build:dev
+
+      - name: Get AWS Credentials Using OIDC
+        id: aws_sts_creds
+        run: |
+          export AWS_ROLE_ARN=${{ secrets.AWS_ROLE_ARN }}
+          export AWS_WEB_IDENTITY_TOKEN_FILE=/tmp/awscreds
+          export AWS_DEFAULT_REGION=${{ env.REGION }}
+
+          curl -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=sigstore" | jq -r '.value' > $AWS_WEB_IDENTITY_TOKEN_FILE
+
+          aws sts assume-role-with-web-identity \
+            --role-arn $AWS_ROLE_ARN \
+            --role-session-name github-actions \
+            --web-identity-token file://$AWS_WEB_IDENTITY_TOKEN_FILE \
+            --duration-seconds 1000 > /tmp/aws-creds
+
+          export AWS_ACCESS_KEY_ID="$(cat /tmp/aws-creds | jq -r ".Credentials.AccessKeyId")"
+          export AWS_SECRET_ACCESS_KEY="$(cat /tmp/aws-creds | jq -r ".Credentials.SecretAccessKey")"
+          export AWS_SESSION_TOKEN="$(cat /tmp/aws-creds | jq -r ".Credentials.SessionToken")"
+
+          echo ::add-mask::$AWS_ACCESS_KEY_ID
+          echo ::add-mask::$AWS_SECRET_ACCESS_KEY
+          echo ::add-mask::$AWS_SESSION_TOKEN
+
+          echo ::set-output name=aws_access_key_id::$AWS_ACCESS_KEY_ID
+          echo ::set-output name=aws_secret_access_key::$AWS_SECRET_ACCESS_KEY
+          echo ::set-output name=aws_session_token::$AWS_SESSION_TOKEN
+          echo ::set-output name=aws_default_region::$AWS_DEFAULT_REGION
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ steps.aws_sts_creds.outputs.aws_access_key_id }}
+          aws-secret-access-key: ${{ steps.aws_sts_creds.outputs.aws_secret_access_key }}
+          aws-session-token: ${{ steps.aws_sts_creds.outputs.aws_session_token }}
+          aws-region: ${{ steps.aws_sts_creds.outputs.aws_default_region }}
+
+      - name: Show SAM Build
+        run: sam --version
+
+#      - name: Create Cloudformation Template
+#        run: |
+#          touch lambda.yaml
+#          echo ${{ steps.cloudformation.outputs.cloudformation_lambda_content }} > lambda.yaml
+#          make sync-deploy bucketName="${{ env.BUCKET_NAME }}" yamlPath="../lambda.yaml"
+
+      # scripts配下からみた相対パス
+      # 別のstepでset-outputを使ってcloudformationのyamlの共有化を図ってみたが1行に集約されてしまうので直接git cloneを行うことにした
+      # git cloneにsecrets.ACCESS_TOKENをつける理由はprivateのリポジトリをcloneするには認可されたaccess tokenを使用する必要があるため
+      # secrets.ACCESS_TOKENはpublicのリポジトリにつけても問題ない
+      - name: Sync Deploy
+        run: |
+          git clone "https://${{ secrets.ACCESS_TOKEN }}@github.com/misupopo/cloudformation-example"
+          npm i
+          cp cloudformation-example/lambda.yaml ./
+          ls -la
+          make sync-deploy bucketName="${{ env.BUCKET_NAME }}" yamlPath="../lambda.yaml"
+
