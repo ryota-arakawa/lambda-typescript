@@ -1,25 +1,65 @@
-version: '3'
+version: '3.3'
 
 services:
-  dynamodb-persistent:
-    container_name: dynamodb-persistent
-    image: amazon/dynamodb-local
-    command: -jar DynamoDBLocal.jar -sharedDb -dbPath /home/dynamodblocal/data/
-    networks:
-      - dynamodb-network
+  localstack:
+    image: "localstack/localstack:latest"
+    container_name: "localstack"
     ports:
-      - '8000:8000'
-    volumes:
-      - ./localDynamodbData:/home/dynamodblocal/data
-  dynamodb-admin:
-    container_name: dynamodb-admin
-    image: aaronshaf/dynamodb-admin
+      - "4566-4599:4566-4599"
+      - "127.0.0.1:8055:8080"
     environment:
-      DYNAMO_ENDPOINT: http://dynamodb-persistent:8000
-    ports:
-      - '8001:8001'
+      SERVICES: "dynamodb"
+      DEBUG: 1
+      PORT_WEB_UI: 8090
+      HOST_TMP_FOLDER: ${TMPDIR}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-local}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-local}
+      AWS_DEFAULT_REGION: ${AWS_REGION:-local}
+      DATA_DIR: /tmp/localstack-data
     networks:
-      - dynamodb-network
+      - "local"
+#    command: -jar DynamoDBLocal.jar -sharedDb -dbPath /home/dynamodblocal/data/
+    volumes:
+      - ./localstackData:/tmp/localstack-data
+
+  dynamodb-admin:
+    image: "aaronshaf/dynamodb-admin:latest"
+    container_name: "dynamodb-viewer"
+    ports:
+      - "8001:8001"
+    environment:
+      DYNAMO_ENDPOINT: http://localstack:4566
+      AWS_REGION: ${AWS_REGION:-local}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-local}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-local}
+    depends_on:
+      - "localstack"
+    networks:
+      - "local"
+
+# localstackに移行するのでコメントアウト
+#  dynamodb-persistent:
+#    container_name: dynamodb-persistent
+#    image: amazon/dynamodb-local
+#    command: -jar DynamoDBLocal.jar -sharedDb -dbPath /home/dynamodblocal/data/
+#    networks:
+#      - dynamodb-network
+#    ports:
+#      - '8000:8000'
+#    volumes:
+#      - ./localDynamodbData:/home/dynamodblocal/data
+
+#  dynamodb-admin:
+#    container_name: dynamodb-admin
+#    image: aaronshaf/dynamodb-admin
+#    environment:
+#      DYNAMO_ENDPOINT: http://dynamodb-persistent:8000
+#    ports:
+#      - '8001:8001'
+#    networks:
+#      - local
+
 networks:
-  dynamodb-network:
+  local:
+    driver: 'bridge'
 

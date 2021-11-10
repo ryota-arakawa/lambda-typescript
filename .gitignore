@@ -2,6 +2,6 @@ node_modules
 .aws-sam
 *.map
 app/src/*.js
-localDynamodbData
+localstackData
 dist
 s3/**
