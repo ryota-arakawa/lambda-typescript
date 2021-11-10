@@ -5,10 +5,11 @@ services:
     image: "localstack/localstack:latest"
     container_name: "localstack"
     ports:
+      # dynamodbの4566やlambdaやsqsの4571をまとめて開放する
       - "4566-4599:4566-4599"
       - "127.0.0.1:8055:8080"
     environment:
-      SERVICES: "dynamodb"
+      SERVICES: "dynamodb, sqs, lambda"
       DEBUG: 1
       PORT_WEB_UI: 8090
       HOST_TMP_FOLDER: ${TMPDIR}
@@ -18,7 +19,6 @@ services:
       DATA_DIR: /tmp/localstack-data
     networks:
       - "local"
-#    command: -jar DynamoDBLocal.jar -sharedDb -dbPath /home/dynamodblocal/data/
     volumes:
       - ./localstackData:/tmp/localstack-data
 
