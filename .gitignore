@@ -5,3 +5,4 @@ app/src/*.js
 localDynamodbData
 dist
 s3/**
+localstackData
