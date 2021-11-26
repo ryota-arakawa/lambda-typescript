@@ -95,8 +95,6 @@ deploy-package:
 	aws cloudformation deploy \
 		--stack-name $(stackName)-lambda \
 		--template-file output.yaml \
-		--parameter-overrides \
-		file://parameters/lambda.json \
 		--capabilities CAPABILITY_IAM
 
 ####### update #######

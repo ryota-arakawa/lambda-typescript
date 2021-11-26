@@ -32,23 +32,3 @@ make sync-local
 make sync-bucket bucketName="$(Lambdaのリソースを置くbucketの名前)"
 ```
 
-### cloudformationを通してデプロイ
-```
-make deploy-package stackName="$(生成されるスタックの名前)"
-```
-
-## output.yamlの雛形を作成する
-version情報のフォルダ構造付きのs3を用意し、そのbucketNameを参照したlambdaをデプロイをするためには
-output.yamlが必要になる。
-output.yamlの雛形は下記で作成が可能。output.yamlを作成したらpathをs3用にカスタマイズするだけ。
-
-### packageのyamlを作成
-templateの中のcodeUriを適宜変更する。
-例えばversionのディレクトリを作成したりするといい。
-
-#### output.yamlを生成する
-```
-make create-package-yaml bucketName="$(作成したs3のbucketの名前)"
-```
-
-
