@@ -8,7 +8,7 @@ env:
   REGION: ap-northeast-1
   RESOURCE_PATH: src
   # BUCKET_NAMEはlambdaのソースコードのS3のアップロードのターゲット
-  BUCKET_NAME: example-lambda-1634779516
+  BUCKET_NAME: s3test-2021112601
 
 jobs:
   build:
@@ -21,7 +21,7 @@ jobs:
       - name: Check out Cloudformation Repository
         uses: actions/checkout@master
         with:
-          repository: misupopo/cloudformation-example
+          repository: ryota-arakawa/cloudformation-example
           token: ${{ secrets.ACCESS_TOKEN }}
       # Sync DeployのStepで直接git cloneを行うため、変数として吐き出す必要がないためコメントアウト
 #          name: cloudformationYamls
@@ -125,7 +125,7 @@ jobs:
       # secrets.ACCESS_TOKENはpublicのリポジトリにつけても問題ない
       - name: Sync Deploy
         run: |
-          git clone "https://${{ secrets.ACCESS_TOKEN }}@github.com/misupopo/cloudformation-example"
+          git clone "https://${{ secrets.ACCESS_TOKEN }}@github.com/ryota-arakawa/cloudformation-example"
           npm i
           cp cloudformation-example/lambda.yaml ./
           ls -la
