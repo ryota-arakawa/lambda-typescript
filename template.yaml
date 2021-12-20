@@ -51,3 +51,12 @@ Resources:
           Properties:
             Path: /app/greeting
             Method: get
+
+  NotificationsLambdaFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/app/appsync/dist
+      Runtime: nodejs12.x
+      Timeout: 10
+      MemorySize: 256
+      Handler: appsync.handler

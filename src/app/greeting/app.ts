@@ -36,7 +36,7 @@ exports.lambdaHandler = async (
 
     response = {
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'lication/json'
       },
       statusCode: 200,
       body: JSON.stringify({
@@ -47,7 +47,7 @@ exports.lambdaHandler = async (
     log.error(err);
     return {
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'lication/json'
       },
       statusCode: 500,
       body: JSON.stringify({
